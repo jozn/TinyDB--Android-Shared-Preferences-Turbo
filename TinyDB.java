@@ -19,7 +19,7 @@
  *  and unicode 2017 that are used for separating the items in a list.
  */
 
-package com.example.myappname;
+package com.mardomsara.social.lib;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,9 +46,15 @@ public class TinyDB {
     private static SharedPreferences preferences;
     private static String DEFAULT_APP_IMAGEDATA_DIRECTORY;
     private static String lastImagePath = "";
+    private static String db_name = "store";
 
-    public TinyDB(Context appContext) {
+    @Deprecated
+    private TinyDB(Context appContext) {
         preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+    }
+
+    public TinyDB(Context appContext, String db_name) {
+        preferences = appContext.getSharedPreferences(db_name,Context.MODE_PRIVATE);
     }
 
 
