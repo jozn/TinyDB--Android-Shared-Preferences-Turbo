@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-//import com.google.gson.Gson;
+import com.google.gson.Gson;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -43,9 +43,9 @@ import android.util.Log;
 
 public class TinyDB {
 
-    private SharedPreferences preferences;
-    private String DEFAULT_APP_IMAGEDATA_DIRECTORY;
-    private String lastImagePath = "";
+    private static SharedPreferences preferences;
+    private static String DEFAULT_APP_IMAGEDATA_DIRECTORY;
+    private static String lastImagePath = "";
 
     public TinyDB(Context appContext) {
         preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
@@ -57,7 +57,7 @@ public class TinyDB {
      * @param path image path
      * @return the Bitmap from 'path'
      */
-    public Bitmap getImage(String path) {
+    public static Bitmap getImage(String path) {
         Bitmap bitmapFromPath = null;
         try {
             bitmapFromPath = BitmapFactory.decodeFile(path);
@@ -75,7 +75,7 @@ public class TinyDB {
      * Returns the String path of the last saved image
      * @return string path of the last saved image
      */
-    public String getSavedImagePath() {
+    public static String getSavedImagePath() {
         return lastImagePath;
     }
 
@@ -87,11 +87,11 @@ public class TinyDB {
      * @param theBitmap the image you want to save as a Bitmap
      * @return returns the full path(file system address) of the saved image
      */
-    public String putImage(String theFolder, String theImageName, Bitmap theBitmap) {
+    public static String putImage(String theFolder, String theImageName, Bitmap theBitmap) {
         if (theFolder == null || theImageName == null || theBitmap == null)
             return null;
 
-        this.DEFAULT_APP_IMAGEDATA_DIRECTORY = theFolder;
+        DEFAULT_APP_IMAGEDATA_DIRECTORY = theFolder;
         String mFullPath = setupFullPath(theImageName);
 
         if (!mFullPath.equals("")) {
@@ -109,7 +109,7 @@ public class TinyDB {
      * @param theBitmap the image you want to save as a Bitmap
      * @return true if image was saved, false otherwise
      */
-    public boolean putImageWithFullPath(String fullPath, Bitmap theBitmap) {
+    public static boolean putImageWithFullPath(String fullPath, Bitmap theBitmap) {
         return !(fullPath == null || theBitmap == null) && saveBitmap(fullPath, theBitmap);
     }
 
@@ -118,7 +118,7 @@ public class TinyDB {
      * @param imageName name of the image
      * @return the full path of the image. If it failed to create directory, return empty string
      */
-    private String setupFullPath(String imageName) {
+    private static String setupFullPath(String imageName) {
         File mFolder = new File(Environment.getExternalStorageDirectory(), DEFAULT_APP_IMAGEDATA_DIRECTORY);
 
         if (isExternalStorageReadable() && isExternalStorageWritable() && !mFolder.exists()) {
@@ -137,7 +137,7 @@ public class TinyDB {
      * @param bitmap the image as a Bitmap
      * @return true if it successfully saved, false otherwise
      */
-    private boolean saveBitmap(String fullPath, Bitmap bitmap) {
+    private static boolean saveBitmap(String fullPath, Bitmap bitmap) {
         if (fullPath == null || bitmap == null)
             return false;
 
@@ -192,7 +192,7 @@ public class TinyDB {
      * @param defaultValue int value returned if key was not found
      * @return int value at 'key' or 'defaultValue' if key not found
      */
-    public int getInt(String key) {
+    public static int getInt(String key) {
         return preferences.getInt(key, 0);
     }
 
@@ -201,7 +201,7 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @return ArrayList of Integers
      */
-    public ArrayList<Integer> getListInt(String key) {
+    public static ArrayList<Integer> getListInt(String key) {
         String[] myList = TextUtils.split(preferences.getString(key, ""), "‚‗‚");
         ArrayList<String> arrayToList = new ArrayList<String>(Arrays.asList(myList));
         ArrayList<Integer> newList = new ArrayList<Integer>();
@@ -218,7 +218,7 @@ public class TinyDB {
      * @param defaultValue long value returned if key was not found
      * @return long value at 'key' or 'defaultValue' if key not found
      */
-    public long getLong(String key, long defaultValue) {
+    public static long getLong(String key, long defaultValue) {
         return preferences.getLong(key, defaultValue);
     }
 
@@ -228,7 +228,7 @@ public class TinyDB {
      * @param defaultValue float value returned if key was not found
      * @return float value at 'key' or 'defaultValue' if key not found
      */
-    public float getFloat(String key) {
+    public static float getFloat(String key) {
         return preferences.getFloat(key, 0);
     }
 
@@ -238,7 +238,7 @@ public class TinyDB {
      * @param defaultValue double value returned if exception is thrown
      * @return double value at 'key' or 'defaultValue' if exception is thrown
      */
-    public double getDouble(String key, double defaultValue) {
+    public static double getDouble(String key, double defaultValue) {
         String number = getString(key);
 
         try {
@@ -254,7 +254,7 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @return ArrayList of Double
      */
-    public ArrayList<Double> getListDouble(String key) {
+    public static ArrayList<Double> getListDouble(String key) {
         String[] myList = TextUtils.split(preferences.getString(key, ""), "‚‗‚");
         ArrayList<String> arrayToList = new ArrayList<String>(Arrays.asList(myList));
         ArrayList<Double> newList = new ArrayList<Double>();
@@ -270,7 +270,7 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @return String value at 'key' or "" (empty String) if key not found
      */
-    public String getString(String key) {
+    public static String getString(String key) {
         return preferences.getString(key, "");
     }
 
@@ -279,7 +279,7 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @return ArrayList of String
      */
-    public ArrayList<String> getListString(String key) {
+    public static ArrayList<String> getListString(String key) {
         return new ArrayList<String>(Arrays.asList(TextUtils.split(preferences.getString(key, ""), "‚‗‚")));
     }
 
@@ -289,7 +289,7 @@ public class TinyDB {
      * @param defaultValue boolean value returned if key was not found
      * @return boolean value at 'key' or 'defaultValue' if key not found
      */
-    public boolean getBoolean(String key) {
+    public static boolean getBoolean(String key) {
         return preferences.getBoolean(key, false);
     }
 
@@ -298,7 +298,7 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @return ArrayList of Boolean
      */
-    public ArrayList<Boolean> getListBoolean(String key) {
+    public static ArrayList<Boolean> getListBoolean(String key) {
         ArrayList<String> myList = getListString(key);
         ArrayList<Boolean> newList = new ArrayList<Boolean>();
 
@@ -314,31 +314,31 @@ public class TinyDB {
     }
 
 
-//    public ArrayList<Object> getListObject(String key, Class<?> mClass){
-//    	Gson gson = new Gson(); 
-//    	
-//    	ArrayList<String> objStrings = getListString(key);
-//    	ArrayList<Object> objects =  new ArrayList<Object>();
-//    	
-//    	for(String jObjString : objStrings){
-//    		Object value  = gson.fromJson(jObjString,  mClass);
-//    		objects.add(value);
-//    	}
-//    	return objects;
-//    }
-    
+    public static ArrayList<Object> getListObject(String key, Class<?> mClass){
+        Gson gson = new Gson();
 
-    
-//    public  Object getObject(String key, Class<?> classOfT){
-//
-//        String json = getString(key);
-//        Object value = new Gson().fromJson(json, classOfT);
-//        if (value == null)
-//            throw new NullPointerException();
-//        return value;
-//    }
-    
-    
+        ArrayList<String> objStrings = getListString(key);
+        ArrayList<Object> objects =  new ArrayList<Object>();
+
+        for(String jObjString : objStrings){
+            Object value  = gson.fromJson(jObjString,  mClass);
+            objects.add(value);
+        }
+        return objects;
+    }
+
+
+
+    public static  Object getObject(String key, Class<?> classOfT){
+
+        String json = getString(key);
+        Object value = new Gson().fromJson(json, classOfT);
+        if (value == null)
+            throw new NullPointerException();
+        return value;
+    }
+
+
     // Put methods
 
     /**
@@ -346,8 +346,8 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @param value int value to be added
      */
-    public void putInt(String key, int value) {
-    	checkForNullKey(key);
+    public static void putInt(String key, int value) {
+        checkForNullKey(key);
         preferences.edit().putInt(key, value).apply();
     }
 
@@ -356,8 +356,8 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @param intList ArrayList of Integer to be added
      */
-    public void putListInt(String key, ArrayList<Integer> intList) {
-    	checkForNullKey(key);
+    public static void putListInt(String key, ArrayList<Integer> intList) {
+        checkForNullKey(key);
         Integer[] myIntList = intList.toArray(new Integer[intList.size()]);
         preferences.edit().putString(key, TextUtils.join("‚‗‚", myIntList)).apply();
     }
@@ -367,8 +367,8 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @param value long value to be added
      */
-    public void putLong(String key, long value) {
-    	checkForNullKey(key);
+    public static void putLong(String key, long value) {
+        checkForNullKey(key);
         preferences.edit().putLong(key, value).apply();
     }
 
@@ -377,8 +377,8 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @param value float value to be added
      */
-    public void putFloat(String key, float value) {
-    	checkForNullKey(key);
+    public static void putFloat(String key, float value) {
+        checkForNullKey(key);
         preferences.edit().putFloat(key, value).apply();
     }
 
@@ -387,8 +387,8 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @param value double value to be added
      */
-    public void putDouble(String key, double value) {
-    	checkForNullKey(key);
+    public static void putDouble(String key, double value) {
+        checkForNullKey(key);
         putString(key, String.valueOf(value));
     }
 
@@ -397,8 +397,8 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @param doubleList ArrayList of Double to be added
      */
-    public void putListDouble(String key, ArrayList<Double> doubleList) {
-    	checkForNullKey(key);
+    public static void putListDouble(String key, ArrayList<Double> doubleList) {
+        checkForNullKey(key);
         Double[] myDoubleList = doubleList.toArray(new Double[doubleList.size()]);
         preferences.edit().putString(key, TextUtils.join("‚‗‚", myDoubleList)).apply();
     }
@@ -408,8 +408,8 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @param value String value to be added
      */
-    public void putString(String key, String value) {
-    	checkForNullKey(key); checkForNullValue(value);
+    public static void putString(String key, String value) {
+        checkForNullKey(key); checkForNullValue(value);
         preferences.edit().putString(key, value).apply();
     }
 
@@ -418,8 +418,8 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @param stringList ArrayList of String to be added
      */
-    public void putListString(String key, ArrayList<String> stringList) {
-    	checkForNullKey(key);
+    public static void putListString(String key, ArrayList<String> stringList) {
+        checkForNullKey(key);
         String[] myStringList = stringList.toArray(new String[stringList.size()]);
         preferences.edit().putString(key, TextUtils.join("‚‗‚", myStringList)).apply();
     }
@@ -429,8 +429,8 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @param value boolean value to be added
      */
-    public void putBoolean(String key, boolean value) {
-    	checkForNullKey(key);
+    public static void putBoolean(String key, boolean value) {
+        checkForNullKey(key);
         preferences.edit().putBoolean(key, value).apply();
     }
 
@@ -439,8 +439,8 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @param boolList ArrayList of Boolean to be added
      */
-    public void putListBoolean(String key, ArrayList<Boolean> boolList) {
-    	checkForNullKey(key);
+    public static void putListBoolean(String key, ArrayList<Boolean> boolList) {
+        checkForNullKey(key);
         ArrayList<String> newList = new ArrayList<String>();
 
         for (Boolean item : boolList) {
@@ -453,33 +453,33 @@ public class TinyDB {
 
         putListString(key, newList);
     }
-    
+
     /**
      * Put ObJect any type into SharedPrefrences with 'key' and save
      * @param key SharedPreferences key
-     * @param obj is the Object you want to put 
+     * @param obj is the Object you want to put
      */
-//    public void putObject(String key, Object obj){
-//    	checkForNullKey(key);
-//    	Gson gson = new Gson(); 
-//    	putString(key, gson.toJson(obj));
-//    }
-//    
-//    public void putListObject(String key, ArrayList<Object> objArray){
-//    	checkForNullKey(key); 
-//    	Gson gson = new Gson(); 
-//    	ArrayList<String> objStrings = new ArrayList<String>();
-//    	for(Object obj : objArray){
-//    		objStrings.add(gson.toJson(obj));
-//    	}
-//    	putListString(key, objStrings);
-//    }
-    
+    public static void putObject(String key, Object obj){
+        checkForNullKey(key);
+        Gson gson = new Gson();
+        putString(key, gson.toJson(obj));
+    }
+
+    public static void putListObject(String key, ArrayList<Object> objArray){
+        checkForNullKey(key);
+        Gson gson = new Gson();
+        ArrayList<String> objStrings = new ArrayList<String>();
+        for(Object obj : objArray){
+            objStrings.add(gson.toJson(obj));
+        }
+        putListString(key, objStrings);
+    }
+
     /**
      * Remove SharedPreferences item with 'key'
      * @param key SharedPreferences key
      */
-    public void remove(String key) {
+    public static void remove(String key) {
         preferences.edit().remove(key).apply();
     }
 
@@ -488,7 +488,7 @@ public class TinyDB {
      * @param path path of image file
      * @return true if it successfully deleted, false otherwise
      */
-    public boolean deleteImage(String path) {
+    public static boolean deleteImage(String path) {
         return new File(path).delete();
     }
 
@@ -496,7 +496,7 @@ public class TinyDB {
     /**
      * Clear SharedPreferences (remove everything)
      */
-    public void clear() {
+    public static void clear() {
         preferences.edit().clear().apply();
     }
 
@@ -504,7 +504,7 @@ public class TinyDB {
      * Retrieve all values from SharedPreferences. Do not modify collection return by method
      * @return a Map representing a list of key/value pairs from SharedPreferences
      */
-    public Map<String, ?> getAll() {
+    public static Map<String, ?> getAll() {
         return preferences.getAll();
     }
 
@@ -513,7 +513,7 @@ public class TinyDB {
      * Register SharedPreferences change listener
      * @param listener listener object of OnSharedPreferenceChangeListener
      */
-    public void registerOnSharedPreferenceChangeListener(
+    public static void registerOnSharedPreferenceChangeListener(
             SharedPreferences.OnSharedPreferenceChangeListener listener) {
 
         preferences.registerOnSharedPreferenceChangeListener(listener);
@@ -523,7 +523,7 @@ public class TinyDB {
      * Unregister SharedPreferences change listener
      * @param listener listener object of OnSharedPreferenceChangeListener to be unregistered
      */
-    public void unregisterOnSharedPreferenceChangeListener(
+    public static void unregisterOnSharedPreferenceChangeListener(
             SharedPreferences.OnSharedPreferenceChangeListener listener) {
 
         preferences.unregisterOnSharedPreferenceChangeListener(listener);
@@ -552,18 +552,18 @@ public class TinyDB {
      * null keys would corrupt the shared pref file and make them unreadable this is a preventive measure
      * @param the pref key
      */
-    public void checkForNullKey(String key){
-    	 if (key == null){
-    		 throw new NullPointerException(); 
-    	 }
+    public static void checkForNullKey(String key){
+        if (key == null){
+            throw new NullPointerException();
+        }
     }
     /**
      * null keys would corrupt the shared pref file and make them unreadable this is a preventive measure
      * @param the pref key
      */
-    public void checkForNullValue(String value){
-    	 if (value == null){
-    		 throw new NullPointerException(); 
-    	 }
+    public static void checkForNullValue(String value){
+        if (value == null){
+            throw new NullPointerException();
+        }
     }
 }
